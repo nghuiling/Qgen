@@ -1,9 +1,12 @@
 import streamlit as st
 import time
 import numpy as np
-
+from base64 import b64encode
+from fpdf import FPDF
+import base64
 from streamlit.components.v1 import html
 
+#nav_page func
 def nav_page(page_name, timeout_secs=3):
     nav_script = """
         <script type="text/javascript">
@@ -31,23 +34,39 @@ def nav_page(page_name, timeout_secs=3):
 
 st.set_page_config(page_title="Qgen", page_icon="😕")
 
-st.markdown("# Generate MCQs")
-st.sidebar.header("Generate MCQs")
-st.write(
-    """Insert yout text here to generate MCQs"""
-)
-text= st.text_input('Input your text:' )
-st.write("or")
-uploaded_file = st.file_uploader("Choose a file")
+output = st.write("Generated questions") # final_result_from_processing_the_input
 
-option = st.selectbox(
- 'Number of MCQs',
-  ('1', '2', '3', '4','5'))
-option2= st.selectbox(
-    'Number of Options per MCQ',
-    ('2','4','6')
-)
-if st.button("Generate my MCQs now!"):
-    nav_page("questions")
+st.text_area(label="Q1:", value=output, height=100)
+st.text_area(label="Q2:", value=output, height=100)
+st.text_area(label="Q3:", value=output, height=100)
+st.text_area(label="Q4:", value=output, height=100)
+st.text_area(label="Q5:", value=output, height=100)
 
 
+#button layouts
+col1, col2, col3 = st.columns([1,1,1])
+
+##col1= download as pdf button
+
+def create_download_link(val, filename):
+    b64 = base64.b64encode(val)  # val looks like b'...'
+    return f'<a href="data:application/octet-stream;base64,{b64.decode()}" download="{filename}.pdf">Download file</a>'
+
+with col1:
+    export_as_pdf = st.button("Download MCQs as PDF")
+
+    if export_as_pdf:
+        pdf = FPDF()
+        pdf.add_page()
+        pdf.set_font('Arial', 'B', 16)
+        pdf.cell(40, 10, output)
+        
+        html = create_download_link(pdf.output(dest="S").encode("latin-1"), "test")
+
+        st.markdown(html, unsafe_allow_html=True)
+with col2:
+    if st.button("Answers"):
+        nav_page("answers")
+with col3:
+    if st.button("Generate New Questions"):
+        nav_page("generate")
