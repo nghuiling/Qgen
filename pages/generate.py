@@ -11,4 +11,5 @@ st.write(
 Streamlit. We're generating a bunch of random numbers in a loop for around
 5 seconds. Enjoy!"""
 )
+st.write("hello")
 
