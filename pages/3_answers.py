@@ -1,6 +1,8 @@
 import streamlit as st
 import json
 from streamlit.components.v1 import html
+from fpdf import FPDF
+import base64
 
 def nav_page(page_name, timeout_secs=3):
     nav_script = """
@@ -90,6 +92,10 @@ with col2:
         pdf = FPDF()
         pdf.add_page()
         pdf.set_font('Arial', 'B', 16)
+
+
+        output = 'testing'
+
         pdf.cell(40, 10, output)
         
         html = create_download_link(pdf.output(dest="S").encode("latin-1"), "test")
@@ -108,5 +114,5 @@ with col3:
         jsonFile = open("data/compare_answer.json", "w")
         jsonFile.write(jsonString)
         jsonFile.close()
-        
+
         nav_page("generate")
