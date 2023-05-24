@@ -3,6 +3,10 @@ import time
 import numpy as np
 from streamlit.components.v1 import html
 
+from codes.Qgen import run_qgen
+
+
+
 def nav_page(page_name, timeout_secs=3):
     nav_script = """
         <script type="text/javascript">
@@ -80,16 +84,33 @@ num_mcq_choice = get_num_choice()
 
 
 
-
-
 #################################
 
 
 if st.button("Generate my MCQs now!"):
-    if (text_input or file_input) and (num_mcq_input and num_mcq_choice):
+    if (text_input and not file_input) or (file_input and not text_input):
+        
+        
+        if (num_mcq_input and num_mcq_choice):
+            if file_input:
+                bytes_data = file_input.getvalue()
+                file_text_input = str(bytes_data, encoding='utf-8')
+                output = run_qgen(file_text_input)
+                st.write(output)
+
+            else:
+                output = run_qgen(text_input)
+                st.write(output)    
+        else:
+            st.write('😥 Unable to generate questions... Please select all the options!')  
+
+    else:
+        st.write('😥 Unable to generate questions... Please choose to either input text or upoad a file!')        
+
+        
 
 
-        nav_page("questions")
+        # nav_page("questions")
 
 
 st.markdown(
