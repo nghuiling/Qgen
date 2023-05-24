@@ -53,6 +53,21 @@ def create_download_link(val, filename):
     b64 = base64.b64encode(val)  # val looks like b'...'
     return f'<a href="data:application/octet-stream;base64,{b64.decode()}" download="{filename}.pdf">Download file</a>'
 
+with col1:
+    pdf = FPDF()  # pdf object
+    pdf = FPDF(orientation="P", unit="mm", format="A4")
+    pdf.add_page()
+
+    pdf.set_font("Times", "B", 18)
+    pdf.set_xy(10.0, 20)
+    pdf.cell(w=75.0, h=5.0, align="L", txt="This is my sample text")
+
+    st.download_button(
+        "Download MCQs",
+        data=pdf.output(dest='S').encode('latin-1'),
+        file_name="Questions.pdf",
+    )
+
 with col2:
     if st.button("Answers"):
         nav_page("answers")

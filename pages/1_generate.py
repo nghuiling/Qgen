@@ -1,10 +1,7 @@
 import streamlit as st
 import time
 import numpy as np
-
 from streamlit.components.v1 import html
-
-
 
 def nav_page(page_name, timeout_secs=3):
     nav_script = """
@@ -31,10 +28,10 @@ def nav_page(page_name, timeout_secs=3):
     """ % (page_name, timeout_secs)
     html(nav_script)
 
-st.set_page_config(page_title="Qgen", page_icon="😕", initial_sidebar_state="collapsed")
+st.set_page_config(page_title="Qgen", page_icon="😕")
 
 st.markdown("# Generate MCQs")
-
+st.sidebar.header("Generate MCQs")
 st.write(
     """Insert yout text here to generate MCQs"""
 )
