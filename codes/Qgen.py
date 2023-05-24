@@ -41,7 +41,7 @@ from nltk.corpus import wordnet as wn
 # =============================================================================
 # from summarizer import Summarizer
 
-def run_qgen(text):
+def run_qgen(text, num_mcq, num_choice):
 
     # f = open("..\data\cybersecurity.txt","r",encoding="utf8")
     # full_text = f.read()
@@ -186,22 +186,24 @@ def run_qgen(text):
     # =============================================================================
 
     json_data = []
+    count = 1
     for each in key_distractor_list:
+
+        if count<=num_mcq:
         
-        sentence = random.choice(keyword_sentence_mapping[each])
-        pattern = re.compile(each, re.IGNORECASE)
-        output_qns = pattern.sub( " _______ ", sentence)    
-        right_answer = each.capitalize()
-        wrong_choices = random.sample(key_distractor_list[each], min(len(key_distractor_list[each]), 10))
-        
-        temp_json_data = {}
-        temp_json_data['question'] = output_qns
-        temp_json_data['answer'] = right_answer
-        temp_json_data['distractors'] = wrong_choices
+            sentence = random.choice(keyword_sentence_mapping[each])
+            pattern = re.compile(each, re.IGNORECASE)
+            output_qns = pattern.sub( " _______ ", sentence)    
+            right_answer = each.capitalize()
+            wrong_choices = random.sample(key_distractor_list[each], min(len(key_distractor_list[each]), num_choice))
             
-        json_data.append(temp_json_data)
+            temp_json_data = {}
+            temp_json_data['question'] = output_qns
+            temp_json_data['answer'] = right_answer
+            temp_json_data['distractors'] = wrong_choices
+                
+            json_data.append(temp_json_data)
+            count= count+1
 
-
-    print(json_data)
 
     return json_data
