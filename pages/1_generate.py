@@ -49,17 +49,16 @@ def get_file():
     uploaded_file = st.file_uploader("Choose a file:")
     return uploaded_file
 
-def get_num_mcq():
+def get_num_mcq(min_max):
     num_mcq = st.selectbox(
     'Number of MCQs',
-    ('','1', '2', '3', '4','5'))
+    min_max)
     return num_mcq
 
-def get_num_choice():
+def get_num_choice(min_max):
     num_choice= st.selectbox(
         'Number of Options per MCQ',
-        ('','2','4','6')
-    )
+        min_max)
     return num_choice
 
 
@@ -71,21 +70,33 @@ st.write("###### or")
 
 file_input = get_file()
 
+#################################
+#testing
+def get_min_max_qns(min, max):
+  items = list(range(min,max+1))
+  items1 = [str(x) for x in items]
+  items1.insert(0,'')
+  items1 = tuple(items1)
+  return items1
+
+
+#settings
+min_max_num_mcq = get_min_max_qns(1,5)
+min_max_num_choice = get_min_max_qns(2,5)
+
+
+#################################
+
+
 st.write("##### Step 2: Select number of questions")
 
-num_mcq_input = get_num_mcq()
+num_mcq_input = get_num_mcq(min_max_num_mcq)
 
 st.write("##### Step 3: Select number of options")
 
-num_mcq_choice = get_num_choice()
+num_mcq_choice = get_num_choice(min_max_num_choice)
 
 
-#################################
-
-
-
-
-#################################
 
 
 if st.button("Generate my MCQs now!"):
@@ -96,12 +107,29 @@ if st.button("Generate my MCQs now!"):
             if file_input:
                 bytes_data = file_input.getvalue()
                 file_text_input = str(bytes_data, encoding='utf-8')
-                output = run_qgen(file_text_input)
+                output = run_qgen(file_text_input, int(num_mcq_input), int(num_mcq_choice))
                 st.write(output)
 
+                # if int(num_mcq_input)>len(output):
+                #     st.write('Unable to generate the desired number of questions!')
+                #     st.write(output)
+
+                # else:
+                #     output = output[:int(num_mcq_input)]
+                #     st.write(output)
+
             else:
-                output = run_qgen(text_input)
-                st.write(output)    
+                output = run_qgen(text_input, int(num_mcq_input), int(num_mcq_choice))
+                st.write(output)
+
+                # if int(num_mcq_input)>len(output):
+                #     st.write('Unable to generate the desired number of questions!')
+                #     st.write(output)
+
+                # else:
+                #     output = output[:num_mcq_input+1]
+                #     st.write(output)
+  
         else:
             st.write('😥 Unable to generate questions... Please select all the options!')  
 
