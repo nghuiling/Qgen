@@ -44,6 +44,20 @@ def get_file():
     uploaded_file = st.file_uploader("Choose a file:")
     return uploaded_file
 
+def get_num_mcq():
+    num_mcq = st.selectbox(
+    'Number of MCQs',
+    ('','1', '2', '3', '4','5'))
+    return num_mcq
+
+def get_num_choice():
+    num_choice= st.selectbox(
+        'Number of Options per MCQ',
+        ('','2','4','6')
+    )
+    return num_choice
+
+
 st.write("##### Step 1: Add your texts")
 
 text_input = get_text()
@@ -52,19 +66,13 @@ st.write("###### or")
 
 file_input = get_file()
 
-
 st.write("##### Step 2: Select number of questions")
 
-option_num_mcq = st.selectbox(
- 'Number of MCQs',
-  ('1', '2', '3', '4','5'))
+num_mcq_input = get_num_mcq()
 
 st.write("##### Step 3: Select number of options")
 
-option_num_choice= st.selectbox(
-    'Number of Options per MCQ',
-    ('2','4','6')
-)
+num_mcq_choice = get_num_choice()
 
 
 #################################
@@ -78,7 +86,9 @@ option_num_choice= st.selectbox(
 
 
 if st.button("Generate my MCQs now!"):
-    if text_input or file_input:
+    if (text_input or file_input) and (num_mcq_input and num_mcq_choice):
+
+
         nav_page("questions")
 
 
