@@ -43,8 +43,7 @@ from nltk.corpus import wordnet as wn
 
 def run_qgen(text, num_mcq, num_choice):
 
-    # f = open("..\data\cybersecurity.txt","r",encoding="utf8")
-    # full_text = f.read()
+
     full_text_list = [x.replace("\n", " ") for x in text.split('\n\n')]
 
     summarized_text_list = []
@@ -186,6 +185,7 @@ def run_qgen(text, num_mcq, num_choice):
     # =============================================================================
 
     json_data = []
+
     count = 1
     for each in key_distractor_list:
 
@@ -195,15 +195,36 @@ def run_qgen(text, num_mcq, num_choice):
             pattern = re.compile(each, re.IGNORECASE)
             output_qns = pattern.sub( " _______ ", sentence)    
             right_answer = each.capitalize()
-            wrong_choices = random.sample(key_distractor_list[each], min(len(key_distractor_list[each]), num_choice))
+
+            #wrong choices
+            all_choices = random.sample(key_distractor_list[each] , min(len(key_distractor_list[each]), num_choice))
+
+            #all choices
+            all_choices.append(right_answer)
+            random.shuffle(all_choices)
+            
+            #get index of correct answer
+            answer_index = all_choices.index(right_answer)
+
+            #options
+            options = ['A','B','C','D','E','F','G']
             
             temp_json_data = {}
             temp_json_data['question'] = output_qns
             temp_json_data['answer'] = right_answer
-            temp_json_data['distractors'] = wrong_choices
+            temp_json_data['answer_index'] = answer_index
+            temp_json_data['shuffled'] = all_choices
+            temp_json_data['options'] = options[:num_choice+1]
                 
             json_data.append(temp_json_data)
+
             count= count+1
 
 
     return json_data
+
+
+# ##TESTING
+# f = open("..\data\cybersecurity.txt","r",encoding="utf8")
+# full_text = f.read()
+# run_qgen(full_text, 2, 4)

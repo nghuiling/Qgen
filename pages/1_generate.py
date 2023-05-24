@@ -6,6 +6,8 @@ from streamlit.components.v1 import html
 
 from codes.Qgen import run_qgen
 
+import json
+
 
 
 def nav_page(page_name, timeout_secs=3):
@@ -97,6 +99,21 @@ st.write("##### Step 3: Select number of options")
 num_mcq_choice = get_num_choice(min_max_num_choice)
 
 
+def save_output(output):
+
+    #save into json file
+    jsonString = json.dumps(output)
+    jsonFile = open("data/data.json", "w")
+    jsonFile.write(jsonString)
+    jsonFile.close()
+
+    # st.write("##### Your results:")
+    # for index,qns in enumerate(output):
+    #     question = 'Q'+str(index+1) + ': ' + output[index]['question']
+    #     shuffled_choices = get_choices(output[index]['options'],output[index]['shuffled'])
+    #     status = st.radio(question,shuffled_choices)
+
+
 
 
 if st.button("Generate my MCQs now!"):
@@ -107,28 +124,15 @@ if st.button("Generate my MCQs now!"):
             if file_input:
                 bytes_data = file_input.getvalue()
                 file_text_input = str(bytes_data, encoding='utf-8')
-                output = run_qgen(file_text_input, int(num_mcq_input), int(num_mcq_choice))
-                st.write(output)
-
-                # if int(num_mcq_input)>len(output):
-                #     st.write('Unable to generate the desired number of questions!')
-                #     st.write(output)
-
-                # else:
-                #     output = output[:int(num_mcq_input)]
-                #     st.write(output)
+                output = run_qgen(file_text_input, int(num_mcq_input), int(num_mcq_choice)-1)
+                save_output(output)
+                nav_page("questions")
 
             else:
-                output = run_qgen(text_input, int(num_mcq_input), int(num_mcq_choice))
-                st.write(output)
+                output = run_qgen(text_input, int(num_mcq_input), int(num_mcq_choice)-1)
+                save_output(output)
+                nav_page("questions")
 
-                # if int(num_mcq_input)>len(output):
-                #     st.write('Unable to generate the desired number of questions!')
-                #     st.write(output)
-
-                # else:
-                #     output = output[:num_mcq_input+1]
-                #     st.write(output)
   
         else:
             st.write('😥 Unable to generate questions... Please select all the options!')  
@@ -136,9 +140,5 @@ if st.button("Generate my MCQs now!"):
     else:
         st.write('😥 Unable to generate questions... Please choose to either input text or upoad a file!')        
 
-        
-
-
-        # nav_page("questions")
 
 
