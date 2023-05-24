@@ -12,7 +12,8 @@ nltk.download('popular')
 
 import json
 
-from summarizer.sbert import SBertSummarizer
+#from summarizer.sbert import SBertSummarizer
+from summarizer import TransformerSummarizer
 
 import pprint
 import itertools
@@ -47,12 +48,12 @@ def run_qgen(text):
     full_text_list = [x.replace("\n", " ") for x in text.split('\n\n')]
 
     summarized_text_list = []
-    model = SBertSummarizer('paraphrase-MiniLM-L6-v2')
+    model = TransformerSummarizer(transformer_type="OpenAIGPT", transformer_model_key="openai-gpt")
 
     for each_para in full_text_list:
         # model = Summarizer()
         # result = model(each_para, min_length=60, ratio = 0.4)
-        result = model(each_para)
+        result = model(each_para, min_length = 60)
         summarized_text = ''.join(result)
         summarized_text_list.append(summarized_text)
 
@@ -69,7 +70,7 @@ def run_qgen(text):
         extractor = pke.unsupervised.MultipartiteRank()
         extractor.load_document(input=text)
         #    not contain punctuation marks or stopwords as candidates.
-        pos = {'PROPN', 'NOUN'}
+        pos = {'NOUN', 'PROPN'}
         #pos = {'VERB', 'ADJ', 'NOUN'}
         stoplist = list(string.punctuation)
         stoplist += ['-lrb-', '-rrb-', '-lcb-', '-rcb-', '-lsb-', '-rsb-']
@@ -81,9 +82,10 @@ def run_qgen(text):
         extractor.candidate_weighting(alpha=1.1,
                                     threshold=0.75,
                                     method='average')
-        keyphrases = extractor.get_n_best(n=20)
-            
+        keyphrases = extractor.get_n_best(n = 100)
+        
         for key in keyphrases:
+            if key[0] not in stoplist:
                 out.append(key[0])
         return out
 
@@ -108,6 +110,7 @@ def run_qgen(text):
         # Remove any short sentences less than 20 letters.
         sentences = [sentence.strip() for sentence in sentences if len(sentence) > 20]
         return sentences
+    
     def get_sentences_for_keyword(keywords, sentences):
         keyword_processor = KeywordProcessor()
         keyword_sentences = {}
@@ -126,11 +129,11 @@ def run_qgen(text):
 
     sentences = tokenize_sentences(summarized_text)
     keyword_sentence_mapping = get_sentences_for_keyword(filtered_keys, sentences)
-    
+    keyword_sentence_mapping = {k: v for k, v in keyword_sentence_mapping.items() if v != []} #remove empty sentences
+
     # =============================================================================
     # Get Distractors using WordNet
     # =============================================================================
-
 
     # Distractors from Wordnet
     def get_distractors_wordnet(syn,word):
