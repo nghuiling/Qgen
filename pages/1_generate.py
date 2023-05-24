@@ -38,18 +38,50 @@ st.markdown("# Generate MCQs")
 st.write(
     """Insert yout text here to generate MCQs"""
 )
-text= st.text_input('Input your text:' )
-st.write("or")
-uploaded_file = st.file_uploader("Choose a file")
 
-option = st.selectbox(
+def get_text():
+    text= st.text_input('Input your text:' , placeholder='Your text here...')
+    return text
+
+def get_file():
+    uploaded_file = st.file_uploader("Choose a file:")
+    return uploaded_file
+
+st.write("##### Step 1: Add your texts")
+
+text_input = get_text()
+
+st.write("###### or")
+
+file_input = get_file()
+
+
+st.write("##### Step 2: Select number of questions")
+
+option_num_mcq = st.selectbox(
  'Number of MCQs',
   ('1', '2', '3', '4','5'))
-option2= st.selectbox(
+
+st.write("##### Step 3: Select number of options")
+
+option_num_choice= st.selectbox(
     'Number of Options per MCQ',
     ('2','4','6')
 )
+
+
+#################################
+
+
+
+
+
+
+#################################
+
+
 if st.button("Generate my MCQs now!"):
-    nav_page("questions")
+    if text_input or file_input:
+        nav_page("questions")
 
 
