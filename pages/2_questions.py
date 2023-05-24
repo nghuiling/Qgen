@@ -74,3 +74,13 @@ with col2:
 with col3:
     if st.button("Generate New Questions"):
         nav_page("generate")
+st.markdown(
+    """
+<style>
+    [data-testid="collapsedControl"] {
+        display: none
+    }
+</style>
+""",
+    unsafe_allow_html=True,
+)
