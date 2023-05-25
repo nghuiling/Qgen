@@ -60,7 +60,7 @@ with col1:
 
     pdf.set_font("Times", "B", 18)
     pdf.set_xy(10.0, 20)
-    pdf.cell(w=75.0, h=5.0, align="L", txt="This is my sample text")
+    pdf.cell(w=75.0, h=5.0, align="L", txt= output)
 
     st.download_button(
         "Download MCQs",

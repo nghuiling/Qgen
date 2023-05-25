@@ -9,23 +9,24 @@ import nltk
 nltk.download('stopwords')
 nltk.download('popular')
 
-
-
 # =============================================================================
 # Summarising text inputs
 # =============================================================================
 # from summarizer import Summarizer
 from summarizer.sbert import SBertSummarizer
-f = open("C:\\Users\\andya\\Desktop\\MINDEF (Work)\\MCQ Generator\\cybersecurity.txt","r",encoding="utf8")
+from summarizer import TransformerSummarizer
+
+f = open("C:\\Users\\ACER\\Desktop\\Qgen\\cybersecurity.txt","r",encoding="utf8")
 full_text = f.read()
 full_text_list = [x.replace("\n", " ") for x in full_text.split('\n\n')]
 
 summarized_text_list = []
-model = SBertSummarizer('paraphrase-MiniLM-L6-v2')
+model = TransformerSummarizer(transformer_type="OpenAIGPT", transformer_model_key="openai-gpt")
+
 for each_para in full_text_list:
     # model = Summarizer()
     # result = model(each_para, min_length=60, ratio = 0.4)
-    result = model(each_para)
+    result = model(each_para, min_length = 60)
     summarized_text = ''.join(result)
     summarized_text_list.append(summarized_text)
 
@@ -43,11 +44,12 @@ from nltk.corpus import stopwords
 
 def get_nouns_multipartite(text):
     
+    # text = ' '.join(full_text_list)
     out=[]
     extractor = pke.unsupervised.MultipartiteRank()
     extractor.load_document(input=text)
     #    not contain punctuation marks or stopwords as candidates.
-    pos = {'PROPN', 'NOUN'}
+    pos = {'NOUN', 'PROPN'}
     #pos = {'VERB', 'ADJ', 'NOUN'}
     stoplist = list(string.punctuation)
     stoplist += ['-lrb-', '-rrb-', '-lcb-', '-rcb-', '-lsb-', '-rsb-']
@@ -56,12 +58,13 @@ def get_nouns_multipartite(text):
     # 4. build the Multipartite graph and rank candidates using random walk,
     #    alpha controls the weight adjustment mechanism, see TopicRank for
     #    threshold/method parameters.
-    extractor.candidate_weighting(alpha=1.1,
-                                  threshold=0.75,
-                                  method='average')
-    keyphrases = extractor.get_n_best(n=20)
+    extractor.candidate_weighting(alpha = 1.1,
+                                  threshold = 0.75,
+                                  method = 'average')
+    keyphrases = extractor.get_n_best(n = 100)
         
     for key in keyphrases:
+        if key[0] not in stoplist:
             out.append(key[0])
     return out
 
@@ -105,7 +108,8 @@ def get_sentences_for_keyword(keywords, sentences):
 
 sentences = tokenize_sentences(summarized_text)
 keyword_sentence_mapping = get_sentences_for_keyword(filtered_keys, sentences)
-  
+keyword_sentence_mapping = {k: v for k, v in keyword_sentence_mapping.items() if v != []} #remove empty sentences
+
 # =============================================================================
 # Get Distractors using WordNet
 # =============================================================================
@@ -120,18 +124,19 @@ from pywsd.lesk import cosine_lesk
 from nltk.corpus import wordnet as wn
 
 # Distractors from Wordnet
-def get_distractors_wordnet(syn,word):
+def get_distractors_wordnet(syn, word):
     distractors=[]
     word= word.lower()
     orig_word = word
     if len(word.split())>0:
         word = word.replace(" ","_")
     hypernym = syn.hypernyms()
-    if len(hypernym) == 0: 
+    
+    if len(hypernym) == 0:
         return distractors
     for item in hypernym[0].hyponyms():
         name = item.lemmas()[0].name()
-        #print ("name ",name, " word",orig_word)
+        # print ("name ",name, " word",orig_word)
         if name == orig_word:
             continue
         name = name.replace("_"," ")
@@ -141,17 +146,19 @@ def get_distractors_wordnet(syn,word):
     return distractors
 
 def get_wordsense(sent, word):
-    word= word.lower()
     
+    word= word.lower()
     if len(word.split())>0:
         word = word.replace(" ","_")
     
     synsets = wn.synsets(word,'n')
+    
     if synsets:
         wup = max_similarity(sent, word, 'wup', pos='n')
         adapted_lesk_output = adapted_lesk(sent, word, pos='n')
-        lowest_index = min (synsets.index(wup),synsets.index(adapted_lesk_output))
+        lowest_index = min(synsets.index(wup), synsets.index(adapted_lesk_output))
         return synsets[lowest_index]
+    
     else:
         return None
 
@@ -178,9 +185,9 @@ for each in key_distractor_list:
     right_answer = each.capitalize()
     wrong_choices = random.sample(key_distractor_list[each], min(len(key_distractor_list[each]), 10))
     
-    temp_json_data = {}
-    temp_json_data['question'] = output_qns
-    temp_json_data['answer'] = right_answer
-    temp_json_data['distractors'] = wrong_choices
-        
-    json_data.append(temp_json_data)
+    if len(wrong_choices) >= 3:
+        temp_json_data = {}
+        temp_json_data['question'] = output_qns
+        temp_json_data['answer'] = right_answer
+        temp_json_data['distractors'] = wrong_choices
+        json_data.append(temp_json_data)
