@@ -1,8 +1,16 @@
 import streamlit as st
+<<<<<<< HEAD
+import time
+from base64 import b64encode
+from fpdf import FPDF
+import base64
+from streamlit.components.v1 import html
+=======
 import json
 from streamlit.components.v1 import html
 from fpdf import FPDF
 import base64
+>>>>>>> 6a9c7239298f5628e49e54ea62e4c460094627f7
 
 def nav_page(page_name, timeout_secs=3):
     nav_script = """
@@ -29,6 +37,19 @@ def nav_page(page_name, timeout_secs=3):
     """ % (page_name, timeout_secs)
     html(nav_script)
 
+<<<<<<< HEAD
+st.set_page_config(page_title="Qgen", page_icon="😕", initial_sidebar_state="collapsed")
+
+output = st.write("Answers") #Answers to the mcqs
+
+st.text_area(label="Q1:", value=output, height=100)
+st.text_area(label="Q2:", value=output, height=100)
+st.text_area(label="Q3:", value=output, height=100)
+st.text_area(label="Q4:", value=output, height=100)
+st.text_area(label="Q5:", value=output, height=100)
+
+col1, col2 = st.columns(2)
+=======
 
 
 st.set_page_config(page_title="Qgen", page_icon="😕", initial_sidebar_state="collapsed")
@@ -74,12 +95,49 @@ get_output()
 col1, col2, col3 = st.columns([1,1,1])
 
 ##col1= download as pdf button
+>>>>>>> 6a9c7239298f5628e49e54ea62e4c460094627f7
 
 def create_download_link(val, filename):
     b64 = base64.b64encode(val)  # val looks like b'...'
     return f'<a href="data:application/octet-stream;base64,{b64.decode()}" download="{filename}.pdf">Download file</a>'
 
 with col1:
+<<<<<<< HEAD
+    pdf = FPDF()  # pdf object
+    pdf = FPDF(orientation="P", unit="mm", format="A4")
+    pdf.add_page()
+
+    pdf.set_font("Times", "B", 18)
+    pdf.set_xy(10.0, 20)
+    pdf.cell(w=75.0, h=5.0, align="L", txt="This is my sample text")
+
+    st.download_button(
+        "Download Answers",
+        data=pdf.output(dest='S').encode('latin-1'),
+        file_name="Answers.pdf",
+    )
+with col2:
+    if st.button("Back"):
+        nav_page("questions")
+
+no_sidebar_style = """
+    <style>
+        div[data-testid="stSidebarNav"] {display: none;}
+    </style>
+"""
+st.markdown(no_sidebar_style, unsafe_allow_html=True)
+
+st.markdown(
+    """
+<style>
+    [data-testid="collapsedControl"] {
+        display: none
+    }
+</style>
+""",
+    unsafe_allow_html=True,
+)
+=======
 
     if st.button("Try Questions Again"):
         nav_page("questions")
@@ -116,3 +174,4 @@ with col3:
         jsonFile.close()
 
         nav_page("generate")
+>>>>>>> 6a9c7239298f5628e49e54ea62e4c460094627f7

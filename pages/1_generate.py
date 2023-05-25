@@ -1,7 +1,6 @@
 import streamlit as st
 import time
 import numpy as np
-
 from streamlit.components.v1 import html
 
 from codes.Qgen import run_qgen
@@ -35,7 +34,7 @@ def nav_page(page_name, timeout_secs=3):
     """ % (page_name, timeout_secs)
     html(nav_script)
 
-st.set_page_config(page_title="Qgen", page_icon="😕", initial_sidebar_state="collapsed")
+st.set_page_config(page_title="Qgen", page_icon="😕",  initial_sidebar_state="collapsed")
 
 st.markdown("# Generate MCQs")
 
@@ -141,4 +140,15 @@ if st.button("Generate my MCQs now!"):
         st.write('😥 Unable to generate questions... Please choose to either input text or upoad a file!')        
 
 
+
+st.markdown(
+    """
+<style>
+    [data-testid="collapsedControl"] {
+        display: none
+    }
+</style>
+""",
+    unsafe_allow_html=True,
+)
 

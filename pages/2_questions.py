@@ -79,6 +79,11 @@ def create_download_link(val, filename):
     return f'<a href="data:application/octet-stream;base64,{b64.decode()}" download="{filename}.pdf">Download file</a>'
 
 with col1:
+<<<<<<< HEAD
+    pdf = FPDF()  # pdf object
+    pdf = FPDF(orientation="P", unit="mm", format="A4")
+    pdf.add_page()
+=======
 
     if st.button("Submit Answers"):
         temp_json_data = {}
@@ -93,16 +98,25 @@ with col1:
 with col2:
 
     export_as_pdf = st.button("Download MCQs as PDF")
+>>>>>>> 6a9c7239298f5628e49e54ea62e4c460094627f7
 
-    if export_as_pdf:
-        pdf = FPDF()
-        pdf.add_page()
-        pdf.set_font('Arial', 'B', 16)
-        pdf.cell(40, 10, output)
-        
-        html = create_download_link(pdf.output(dest="S").encode("latin-1"), "test")
+    pdf.set_font("Times", "B", 18)
+    pdf.set_xy(10.0, 20)
+    pdf.cell(w=75.0, h=5.0, align="L", txt= output)
 
+    st.download_button(
+        "Download MCQs",
+        data=pdf.output(dest='S').encode('latin-1'),
+        file_name="Questions.pdf",
+    )
+
+<<<<<<< HEAD
+with col2:
+    if st.button("Answers"):
+        nav_page("answers")
+=======
         st.markdown(html, unsafe_allow_html=True)
+>>>>>>> 6a9c7239298f5628e49e54ea62e4c460094627f7
 with col3:
     if st.button("Generate New Questions"):
 
@@ -118,3 +132,13 @@ with col3:
         jsonFile.close()
 
         nav_page("generate")
+st.markdown(
+    """
+<style>
+    [data-testid="collapsedControl"] {
+        display: none
+    }
+</style>
+""",
+    unsafe_allow_html=True,
+)
