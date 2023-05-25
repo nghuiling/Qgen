@@ -186,29 +186,29 @@ def run_qgen(text, num_mcq, num_choice):
 
     json_data = []
 
-    count = 1
+    
     for each in key_distractor_list:
+    
+        sentence = random.choice(keyword_sentence_mapping[each])
+        pattern = re.compile(each, re.IGNORECASE)
+        output_qns = pattern.sub( " _______ ", sentence)    
+        right_answer = each.capitalize()
 
-        if count<=num_mcq:
+        #wrong choices
+        all_choices = random.sample(key_distractor_list[each] , min(len(key_distractor_list[each]), num_choice))
+
+        #all choices
+        all_choices.append(right_answer)
+        random.shuffle(all_choices)
         
-            sentence = random.choice(keyword_sentence_mapping[each])
-            pattern = re.compile(each, re.IGNORECASE)
-            output_qns = pattern.sub( " _______ ", sentence)    
-            right_answer = each.capitalize()
+        #get index of correct answer
+        answer_index = all_choices.index(right_answer)
 
-            #wrong choices
-            all_choices = random.sample(key_distractor_list[each] , min(len(key_distractor_list[each]), num_choice))
+        #options
+        options = ['A','B','C','D','E','F','G']
+        
+        if len(all_choices) >= 4:
 
-            #all choices
-            all_choices.append(right_answer)
-            random.shuffle(all_choices)
-            
-            #get index of correct answer
-            answer_index = all_choices.index(right_answer)
-
-            #options
-            options = ['A','B','C','D','E','F','G']
-            
             temp_json_data = {}
             temp_json_data['question'] = output_qns
             temp_json_data['answer'] = right_answer
@@ -218,10 +218,10 @@ def run_qgen(text, num_mcq, num_choice):
                 
             json_data.append(temp_json_data)
 
-            count= count+1
+            
 
 
-    return json_data
+    return random.sample(json_data, min(len(json_data), num_mcq))
 
 
 # ##TESTING

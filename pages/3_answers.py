@@ -1,16 +1,10 @@
 import streamlit as st
-<<<<<<< HEAD
-import time
-from base64 import b64encode
-from fpdf import FPDF
-import base64
-from streamlit.components.v1 import html
-=======
 import json
 from streamlit.components.v1 import html
 from fpdf import FPDF
 import base64
->>>>>>> 6a9c7239298f5628e49e54ea62e4c460094627f7
+import math
+
 
 def nav_page(page_name, timeout_secs=3):
     nav_script = """
@@ -37,24 +31,31 @@ def nav_page(page_name, timeout_secs=3):
     """ % (page_name, timeout_secs)
     html(nav_script)
 
-<<<<<<< HEAD
-st.set_page_config(page_title="Qgen", page_icon="😕", initial_sidebar_state="collapsed")
-
-output = st.write("Answers") #Answers to the mcqs
-
-st.text_area(label="Q1:", value=output, height=100)
-st.text_area(label="Q2:", value=output, height=100)
-st.text_area(label="Q3:", value=output, height=100)
-st.text_area(label="Q4:", value=output, height=100)
-st.text_area(label="Q5:", value=output, height=100)
-
-col1, col2 = st.columns(2)
-=======
 
 
-st.set_page_config(page_title="Qgen", page_icon="😕", initial_sidebar_state="collapsed")
+st.set_page_config(page_title="Qgen", page_icon="🔍", initial_sidebar_state="collapsed")
 
-st.markdown("# Answers")
+st.markdown("""
+<style>
+.big-font {
+    font-size:35px !important;
+    font-weight: bold;
+}
+.med-font {
+    font-size:20px !important;
+    font-weight: bold;
+}
+</style>
+""", unsafe_allow_html=True)
+
+
+
+
+
+with open( "assets\style.css" ) as css:
+    st.markdown( f'<style>{css.read()}</style>' , unsafe_allow_html= True)
+
+st.markdown('<p class="big-font">Answers</p>', unsafe_allow_html=True)
 
 #get multiple choices
 def get_choices(options,shuffled):
@@ -64,6 +65,9 @@ def get_choices(options,shuffled):
 
 
 def get_output():
+
+    your_answer = []
+    correct_answer = []
 
     # Opening JSON file
     with open('data/compare_answer.json', 'r') as openfile:
@@ -76,71 +80,47 @@ def get_output():
     
         # Reading from json file
         output = json.load(openfile)
-
-    st.write('##### Your score: ' +str( len([i for i, j in zip(compare['your_answer'], compare['correct_answer']) if i == j]))+'/'+str(len(compare['correct_answer'])))
+    try:
+        st.write('##### Your score: ' +str( len([i for i, j in zip(compare['your_answer'], compare['correct_answer']) if i == j]))+'/'+str(len(compare['correct_answer'])))
+    except Exception:
+        st.write()
 
     for index,qns in enumerate(output):
         question = 'Q'+str(index+1) + ': ' + output[index]['question']
         shuffled_choices = get_choices(output[index]['options'],output[index]['shuffled'])
         status = st.radio(question,shuffled_choices, index=output[index]['shuffled'].index(compare['your_answer'][index]))
+        your_answer.append(str(status.split(':')[1]).strip())
+        correct_answer.append(output[index]['answer'])
 
         if str(status.split(':')[1]).strip() == str(output[index]['answer']):
             st.success('Correct!')
         else:
             st.error('Wrong!')
 
-get_output()
+    return output, your_answer, correct_answer
+
+output, your_answer, correct_answer =get_output()
 
 #button layouts
 col1, col2, col3 = st.columns([1,1,1])
 
 ##col1= download as pdf button
->>>>>>> 6a9c7239298f5628e49e54ea62e4c460094627f7
 
 def create_download_link(val, filename):
     b64 = base64.b64encode(val)  # val looks like b'...'
     return f'<a href="data:application/octet-stream;base64,{b64.decode()}" download="{filename}.pdf">Download file</a>'
 
 with col1:
-<<<<<<< HEAD
-    pdf = FPDF()  # pdf object
-    pdf = FPDF(orientation="P", unit="mm", format="A4")
-    pdf.add_page()
 
-    pdf.set_font("Times", "B", 18)
-    pdf.set_xy(10.0, 20)
-    pdf.cell(w=75.0, h=5.0, align="L", txt="This is my sample text")
-
-    st.download_button(
-        "Download Answers",
-        data=pdf.output(dest='S').encode('latin-1'),
-        file_name="Answers.pdf",
-    )
-with col2:
-    if st.button("Back"):
-        nav_page("questions")
-
-no_sidebar_style = """
-    <style>
-        div[data-testid="stSidebarNav"] {display: none;}
-    </style>
-"""
-st.markdown(no_sidebar_style, unsafe_allow_html=True)
-
-st.markdown(
-    """
-<style>
-    [data-testid="collapsedControl"] {
-        display: none
-    }
-</style>
-""",
-    unsafe_allow_html=True,
-)
-=======
-
-    if st.button("Try Questions Again"):
-        nav_page("questions")
+    if st.button("Submit Answers"):
+        temp_json_data = {}
+        temp_json_data['your_answer'] = your_answer
+        temp_json_data['correct_answer'] = correct_answer
+        jsonString = json.dumps(temp_json_data)
+        jsonFile = open("data/compare_answer.json", "w")
+        jsonFile.write(jsonString)
+        jsonFile.close()
+        nav_page("answers")
 
 with col2:
 
@@ -149,19 +129,57 @@ with col2:
     if export_as_pdf:
         pdf = FPDF()
         pdf.add_page()
+
         pdf.set_font('Arial', 'B', 16)
+        pdf.cell(190, 10, txt='MCQ Questions', align='C')
+        pdf.ln(h=15)
 
+        page_lines = 0
 
-        output = 'testing'
+        for qn_num in range(len(output)):
+            pdf.set_font('Arial', 'B', 10)
+            tmp_qn = "(" + str(qn_num+1) + ")" + "  " + output[qn_num]['question']
 
-        pdf.cell(40, 10, output)
+            string_width = pdf.get_string_width(tmp_qn)
+            num_lines = math.ceil(string_width / (190-1))
+            num_lines_options = len(output[qn_num]['shuffled'])
+            total_lines_for_qn = num_lines + num_lines_options
+
+            if (page_lines+total_lines_for_qn)>=20:
+                pdf.add_page()
+                page_lines = 0
+            else:
+                page_lines += total_lines_for_qn
+
+            pdf.multi_cell(190, 10, txt=tmp_qn)
+
+            for choices in range(len(output[qn_num]['shuffled'])):
+                pdf.set_font(family='Arial', size=10)
+                tmp_option = "        " + output[qn_num]['options'][choices] + ") " + output[qn_num]['shuffled'][choices]
+                pdf.cell(190, 10, txt=tmp_option)
+                pdf.ln()
+
+                if choices==len(output[qn_num]['options'])-1:
+                    pdf.ln(h=1)
+
+        pdf.add_page()
+
+        pdf.set_font('Arial', 'B', 16)
+        pdf.cell(190, 10, txt='Answers', align='C')
+        pdf.ln(h=15)
+
+        for qn_num in range(len(output)):
+            pdf.set_font('Arial', 'B', 12)
+            tmp_answer = "(" + str(qn_num+1) + ")" + "  " + output[qn_num]['options'][output[qn_num]['answer_index']]
+            pdf.cell(190, 10, txt=tmp_answer)
+            pdf.ln()
         
         html = create_download_link(pdf.output(dest="S").encode("latin-1"), "test")
 
         st.markdown(html, unsafe_allow_html=True)
 with col3:
     if st.button("Generate New Questions"):
-        
+
         #remove previous json file
         jsonString = json.dumps({})
         jsonFile = open("data/data.json", "w")
@@ -174,4 +192,3 @@ with col3:
         jsonFile.close()
 
         nav_page("generate")
->>>>>>> 6a9c7239298f5628e49e54ea62e4c460094627f7

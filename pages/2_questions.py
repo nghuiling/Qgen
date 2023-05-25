@@ -1,6 +1,11 @@
 import streamlit as st
 import json
+import base64
+import math
 from streamlit.components.v1 import html
+from fpdf import FPDF
+
+
 
 def nav_page(page_name, timeout_secs=3):
     nav_script = """
@@ -29,9 +34,41 @@ def nav_page(page_name, timeout_secs=3):
 
 
 
-st.set_page_config(page_title="Qgen", page_icon="😕", initial_sidebar_state="collapsed")
+st.set_page_config(page_title="Qgen", page_icon="🔍", initial_sidebar_state="collapsed")
 
-st.markdown("# Generated MCQs")
+st.markdown(
+    """
+<style>
+    [data-testid="collapsedControl"] {
+        display: none
+    }
+</style>
+""",
+    unsafe_allow_html=True,
+)
+
+
+st.markdown("""
+<style>
+.big-font {
+    font-size:35px !important;
+    font-weight: bold;
+}
+.med-font {
+    font-size:20px !important;
+    font-weight: bold;
+}
+</style>
+""", unsafe_allow_html=True)
+
+
+
+
+
+with open( "assets\style.css" ) as css:
+    st.markdown( f'<style>{css.read()}</style>' , unsafe_allow_html= True)
+
+st.markdown('<p class="big-font">Generated MCQs</p>', unsafe_allow_html=True)
 
 #get multiple choices
 def get_choices(options,shuffled):
@@ -58,13 +95,13 @@ def get_output():
         your_answer.append(str(status.split(':')[1]).strip())
         correct_answer.append(output[index]['answer'])
 
-    return your_answer, correct_answer
+    return output, your_answer, correct_answer
         
 
 
 
 
-your_answer, correct_answer= get_output()
+output, your_answer, correct_answer= get_output()
 
 
 
@@ -79,11 +116,6 @@ def create_download_link(val, filename):
     return f'<a href="data:application/octet-stream;base64,{b64.decode()}" download="{filename}.pdf">Download file</a>'
 
 with col1:
-<<<<<<< HEAD
-    pdf = FPDF()  # pdf object
-    pdf = FPDF(orientation="P", unit="mm", format="A4")
-    pdf.add_page()
-=======
 
     if st.button("Submit Answers"):
         temp_json_data = {}
@@ -98,25 +130,58 @@ with col1:
 with col2:
 
     export_as_pdf = st.button("Download MCQs as PDF")
->>>>>>> 6a9c7239298f5628e49e54ea62e4c460094627f7
 
-    pdf.set_font("Times", "B", 18)
-    pdf.set_xy(10.0, 20)
-    pdf.cell(w=75.0, h=5.0, align="L", txt= output)
+    if export_as_pdf:
+        pdf = FPDF()
+        pdf.add_page()
 
-    st.download_button(
-        "Download MCQs",
-        data=pdf.output(dest='S').encode('latin-1'),
-        file_name="Questions.pdf",
-    )
+        pdf.set_font('Arial', 'B', 16)
+        pdf.cell(190, 10, txt='MCQ Questions', align='C')
+        pdf.ln(h=15)
 
-<<<<<<< HEAD
-with col2:
-    if st.button("Answers"):
-        nav_page("answers")
-=======
+        page_lines = 0
+
+        for qn_num in range(len(output)):
+            pdf.set_font('Arial', 'B', 10)
+            tmp_qn = "(" + str(qn_num+1) + ")" + "  " + output[qn_num]['question']
+
+            string_width = pdf.get_string_width(tmp_qn)
+            num_lines = math.ceil(string_width / (190-1))
+            num_lines_options = len(output[qn_num]['shuffled'])
+            total_lines_for_qn = num_lines + num_lines_options
+
+            if (page_lines+total_lines_for_qn)>=20:
+                pdf.add_page()
+                page_lines = 0
+            else:
+                page_lines += total_lines_for_qn
+
+            pdf.multi_cell(190, 10, txt=tmp_qn)
+
+            for choices in range(len(output[qn_num]['shuffled'])):
+                pdf.set_font(family='Arial', size=10)
+                tmp_option = "        " + output[qn_num]['options'][choices] + ") " + output[qn_num]['shuffled'][choices]
+                pdf.cell(190, 10, txt=tmp_option)
+                pdf.ln()
+
+                if choices==len(output[qn_num]['options'])-1:
+                    pdf.ln(h=1)
+
+        pdf.add_page()
+
+        pdf.set_font('Arial', 'B', 16)
+        pdf.cell(190, 10, txt='Answers', align='C')
+        pdf.ln(h=15)
+
+        for qn_num in range(len(output)):
+            pdf.set_font('Arial', 'B', 12)
+            tmp_answer = "(" + str(qn_num+1) + ")" + "  " + output[qn_num]['options'][output[qn_num]['answer_index']]
+            pdf.cell(190, 10, txt=tmp_answer)
+            pdf.ln()
+        
+        html = create_download_link(pdf.output(dest="S").encode("latin-1"), "test")
+
         st.markdown(html, unsafe_allow_html=True)
->>>>>>> 6a9c7239298f5628e49e54ea62e4c460094627f7
 with col3:
     if st.button("Generate New Questions"):
 
@@ -132,13 +197,3 @@ with col3:
         jsonFile.close()
 
         nav_page("generate")
-st.markdown(
-    """
-<style>
-    [data-testid="collapsedControl"] {
-        display: none
-    }
-</style>
-""",
-    unsafe_allow_html=True,
-)
