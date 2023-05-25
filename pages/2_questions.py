@@ -1,13 +1,7 @@
 import streamlit as st
-import time
-import numpy as np
-from base64 import b64encode
-from fpdf import FPDF
-import base64
+import json
 from streamlit.components.v1 import html
 
-
-#nav_page func
 def nav_page(page_name, timeout_secs=3):
     nav_script = """
         <script type="text/javascript">
@@ -33,15 +27,46 @@ def nav_page(page_name, timeout_secs=3):
     """ % (page_name, timeout_secs)
     html(nav_script)
 
-st.set_page_config(page_title="Qgen", page_icon="😕",  initial_sidebar_state="collapsed")
 
-output = st.write("Generated questions") # final_result_from_processing_the_input
 
-st.text_area(label="Q1:", value=output, height=100)
-st.text_area(label="Q2:", value=output, height=100)
-st.text_area(label="Q3:", value=output, height=100)
-st.text_area(label="Q4:", value=output, height=100)
-st.text_area(label="Q5:", value=output, height=100)
+st.set_page_config(page_title="Qgen", page_icon="😕", initial_sidebar_state="collapsed")
+
+st.markdown("# Generated MCQs")
+
+#get multiple choices
+def get_choices(options,shuffled):
+  items1 = [options[x] + ': '+shuffled[x] for x in range(0,len(shuffled))]
+  items1 = tuple(items1)
+  return items1
+
+
+def get_output():
+
+    your_answer = []
+    correct_answer = []
+
+    # Opening JSON file
+    with open('data/data.json', 'r') as openfile:
+    
+        # Reading from json file
+        output = json.load(openfile)
+
+    for index,qns in enumerate(output):
+        question = 'Q'+str(index+1) + ': ' + output[index]['question']
+        shuffled_choices = get_choices(output[index]['options'],output[index]['shuffled'])
+        status = st.radio(question,shuffled_choices)
+        your_answer.append(str(status.split(':')[1]).strip())
+        correct_answer.append(output[index]['answer'])
+
+    return your_answer, correct_answer
+        
+
+
+
+
+your_answer, correct_answer= get_output()
+
+
 
 
 #button layouts
@@ -54,9 +79,26 @@ def create_download_link(val, filename):
     return f'<a href="data:application/octet-stream;base64,{b64.decode()}" download="{filename}.pdf">Download file</a>'
 
 with col1:
+<<<<<<< HEAD
     pdf = FPDF()  # pdf object
     pdf = FPDF(orientation="P", unit="mm", format="A4")
     pdf.add_page()
+=======
+
+    if st.button("Submit Answers"):
+        temp_json_data = {}
+        temp_json_data['your_answer'] = your_answer
+        temp_json_data['correct_answer'] = correct_answer
+        jsonString = json.dumps(temp_json_data)
+        jsonFile = open("data/compare_answer.json", "w")
+        jsonFile.write(jsonString)
+        jsonFile.close()
+        nav_page("answers")
+
+with col2:
+
+    export_as_pdf = st.button("Download MCQs as PDF")
+>>>>>>> 6a9c7239298f5628e49e54ea62e4c460094627f7
 
     pdf.set_font("Times", "B", 18)
     pdf.set_xy(10.0, 20)
@@ -68,11 +110,27 @@ with col1:
         file_name="Questions.pdf",
     )
 
+<<<<<<< HEAD
 with col2:
     if st.button("Answers"):
         nav_page("answers")
+=======
+        st.markdown(html, unsafe_allow_html=True)
+>>>>>>> 6a9c7239298f5628e49e54ea62e4c460094627f7
 with col3:
     if st.button("Generate New Questions"):
+
+        #remove previous json file
+        jsonString = json.dumps({})
+        jsonFile = open("data/data.json", "w")
+        jsonFile.write(jsonString)
+        jsonFile.close()
+
+        jsonString = json.dumps({})
+        jsonFile = open("data/compare_answer.json", "w")
+        jsonFile.write(jsonString)
+        jsonFile.close()
+
         nav_page("generate")
 st.markdown(
     """
