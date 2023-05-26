@@ -2,8 +2,7 @@
 
 <img src="assets/logo.png" alt="Qgen" width="200" height="200">
 
-### Qgen<br>
-A new generation of learning
+### Qgen: A new generation of learning
 
 <br>
 Qgen is a tool that helps you generate Multiple Choice Questions (MCQ) from any text.<br>
