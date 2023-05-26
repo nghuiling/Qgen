@@ -76,7 +76,7 @@ with open( css_path) as css:
 
 
 #get image
-image = Image.open('assets/logo.png')
+image = Image.open(logo_path)
 
 vert_space = '<div style="padding: 4%;"></div>'
 st.markdown(vert_space, unsafe_allow_html=True)
