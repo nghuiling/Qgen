@@ -4,7 +4,9 @@ from PIL import Image
 
 from streamlit.components.v1 import html
 
+import os
 
+os.getcwd()
 
 
 def nav_page(page_name, timeout_secs=3):
@@ -61,7 +63,12 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 
-with open( "assets\style.css" ) as css:
+#file path
+css_path = os.path.realpath('assets/style.css')
+logo_path = os.path.realpath('assets/logo.png')
+
+
+with open( css_path) as css:
     st.markdown( f'<style>{css.read()}</style>' , unsafe_allow_html= True)
 
 
@@ -88,22 +95,3 @@ with col2:
     vert_space = '<div style="padding: 50%;"></div>'
     # if st.button("Create Your Quiz!"):
     #     nav_page("generate")
-# ##################################
-# ##can add columns
-# col1, col2 = st.columns(2)
-
-# with col1:
-#     st.markdown('## Column 1')
-#     st.write('col1')
-#     st.markdown('Testing')
-
-# with col2:
-#     st.write('col2')
-
-# ##################################
-
-# input_text = st.text_area(label="", placeholder="Your Email...", key="email_input")
-
-# if input_text:
-#     st.write('there is text now')
-#     st.write(input_text)
