@@ -10,6 +10,12 @@ Attach your notes, guidebooks and articles to generate questions for your learni
 <br>
 <!-- </div> -->
 
+### Method
+<img src="assets/methods1.png" alt="Method" width="550" height="300">
+
+<br>
+<br>
+
 ### Demo
 
 
