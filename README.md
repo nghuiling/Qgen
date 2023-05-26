@@ -10,6 +10,14 @@ Attach your notes, guidebooks and articles to generate questions for your learni
 <br>
 <!-- </div> -->
 
+### Demo
+
+
+https://github.com/nghuiling/Qgen/assets/47473260/b996a7d0-d64c-42eb-a622-9257611f7eda
+
+<br>
+<br>
+
 
 ### Installation
 
