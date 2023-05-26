@@ -1,6 +1,6 @@
 <div align="center">
 
-<img src="assets/logo.png" alt="Qgen" width="500" height="500">
+<img src="assets/logo.png" alt="Qgen" width="200" height="200">
 
 ### Qgen: A new generation of learning
 
