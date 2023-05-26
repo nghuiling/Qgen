@@ -1,6 +1,7 @@
 ### Qgen: A new generation of learning
 
-Qgen is a tool that helps you generate Multiple Choice Questions (MCQ) from any text. Attach your notes, guidebooks and articles to generate questions for your learning.
+Qgen is a tool that helps you generate Multiple Choice Questions (MCQ) from any text.<br>
+Attach your notes, guidebooks and articles to generate questions for your learning.
 
 
 
