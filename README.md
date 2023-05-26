@@ -1,4 +1,4 @@
-<div align="center">
+<!-- <div align="center"> -->
 
 <img src="assets/logo.png" alt="Qgen" width="200" height="200">
 
@@ -9,7 +9,7 @@ A new generation of learning
 Qgen is a tool that helps you generate Multiple Choice Questions (MCQ) from any text.<br>
 Attach your notes, guidebooks and articles to generate questions for your learning.
 <br>
-</div>
+<!-- </div> -->
 
 
 ### Installation
