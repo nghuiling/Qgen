@@ -41,3 +41,7 @@ https://github.com/nghuiling/Qgen/assets/47473260/b996a7d0-d64c-42eb-a622-925761
    ```
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
+
+### Reference
+
+https://towardsdatascience.com/practical-ai-automatically-generate-multiple-choice-questions-mcqs-from-any-content-with-bert-2140d53a9bf5
