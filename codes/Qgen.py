@@ -35,6 +35,7 @@ from pywsd.lesk import simple_lesk
 from pywsd.lesk import cosine_lesk
 from nltk.corpus import wordnet as wn
 
+import streamlit as st
 
 # =============================================================================
 # Summarising text inputs
@@ -66,6 +67,7 @@ def run_qgen(text, num_mcq, num_choice):
     def get_nouns_multipartite(text):
         
         out=[]
+
         extractor = pke.unsupervised.MultipartiteRank()
         extractor.load_document(input=text)
         #    not contain punctuation marks or stopwords as candidates.
