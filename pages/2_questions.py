@@ -5,6 +5,9 @@ import math
 from streamlit.components.v1 import html
 from fpdf import FPDF
 
+import os
+
+os.getcwd()
 
 
 def nav_page(page_name, timeout_secs=3):
@@ -62,10 +65,13 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 
+#file path
+css_path = os.path.realpath('assets/style.css')
+data_path = os.path.realpath('data/data.json')
+compare_data_path = os.path.realpath('data/compare_answer.json')
 
 
-
-with open( "assets\style.css" ) as css:
+with open( css_path) as css:
     st.markdown( f'<style>{css.read()}</style>' , unsafe_allow_html= True)
 
 st.markdown('<p class="big-font">Generated MCQs</p>', unsafe_allow_html=True)
@@ -122,7 +128,7 @@ with col1:
         temp_json_data['your_answer'] = your_answer
         temp_json_data['correct_answer'] = correct_answer
         jsonString = json.dumps(temp_json_data)
-        jsonFile = open("data/compare_answer.json", "w")
+        jsonFile = open(compare_data_path, "w")
         jsonFile.write(jsonString)
         jsonFile.close()
         nav_page("answers")
@@ -187,12 +193,12 @@ with col3:
 
         #remove previous json file
         jsonString = json.dumps({})
-        jsonFile = open("data/data.json", "w")
+        jsonFile = open(data_path, "w")
         jsonFile.write(jsonString)
         jsonFile.close()
 
         jsonString = json.dumps({})
-        jsonFile = open("data/compare_answer.json", "w")
+        jsonFile = open(compare_data_path, "w")
         jsonFile.write(jsonString)
         jsonFile.close()
 
