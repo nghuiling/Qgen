@@ -1,7 +1,7 @@
 <!-- <div align="center"> -->
 ### Qgen
-<img src="assets/logo_tag.png" alt="Qgen" width="325" height="150">
-
+<!-- <img src="assets/logo_tag.png" alt="Qgen" width="325" height="150"> -->
+<img src="assets/dark blue logo.png" alt="Qgen" width="200" height="200">
 
 
 Qgen is a tool that helps you generate Multiple Choice Questions (MCQ) from any text.<br>
