@@ -11,7 +11,7 @@ Attach your notes, guidebooks and articles to generate questions for your learni
 <!-- </div> -->
 
 ### Method
-<img src="assets/methods1.png" alt="Method" width="730" height="400">
+<img src="assets/methods.png" alt="Method" width="730" height="400">
 
 <br>
 <br>
