@@ -37,7 +37,7 @@ def nav_page(page_name, timeout_secs=3):
 
 
 #change time of the tab
-st.set_page_config(page_title='MCQ Generator', initial_sidebar_state="collapsed", page_icon="🔍")
+st.set_page_config(page_title="Qgen", page_icon="🔍",initial_sidebar_state="collapsed")
 # st.header('MCQ Generator')
 
 st.markdown(

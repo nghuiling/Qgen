@@ -120,7 +120,7 @@ def create_download_link(val, filename):
 
 with col1:
 
-    if st.button("Submit Answers"):
+    if st.button("Try Again"):
         temp_json_data = {}
         temp_json_data['your_answer'] = your_answer
         temp_json_data['correct_answer'] = correct_answer
@@ -128,7 +128,7 @@ with col1:
         jsonFile = open(compare_data_path, "w")
         jsonFile.write(jsonString)
         jsonFile.close()
-        nav_page("answers")
+        nav_page("questions")
 
 with col2:
 
