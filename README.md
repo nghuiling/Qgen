@@ -1,6 +1,6 @@
 <!-- <div align="center"> -->
 
-<img src="assets/logo_tag.png" alt="Qgen" width="200" height="200">
+<img src="assets/logo_tag.png" alt="Qgen" width="425" height="200">
 
 ### Qgen
 
