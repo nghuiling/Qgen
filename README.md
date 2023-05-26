@@ -8,7 +8,7 @@ _Below is an example of how you can instruct your audience on installing and set
 
 1. Clone the repo
    ```sh
-   git clone [https://github.com/your_username_/Project-Name.git](https://github.com/nghuiling/Qgen.git)
+   git clone [https://github.com/nghuiling/Qgen.git](https://github.com/nghuiling/Qgen.git)
    ```
 3. Install Python packages
    ```sh
