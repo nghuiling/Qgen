@@ -39,8 +39,8 @@ https://github.com/nghuiling/Qgen/assets/47473260/b996a7d0-d64c-42eb-a622-925761
    ```sh
    streamlit run home.py
    ```
-
-<p align="right">(<a href="#readme-top">back to top</a>)</p>
+<br>
+<br>
 
 ### Reference
 
