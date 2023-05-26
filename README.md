@@ -1,4 +1,4 @@
-<img src="data/logo.png" alt="Logo" width="80" height="80">
+<img src="assets/logo.png" alt="Qgen" width="80" height="80">
 
 ### Qgen: A new generation of learning
 
