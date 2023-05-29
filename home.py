@@ -65,7 +65,7 @@ st.markdown("""
 
 #file path
 css_path = os.path.realpath('assets/style.css')
-logo_path = os.path.realpath('assets/logo.png')
+logo_path = os.path.realpath('assets/dark blue logo.png')
 
 
 with open( css_path) as css:
@@ -91,7 +91,7 @@ with col2:
     st.markdown('<p>',unsafe_allow_html=True)
     st.markdown('<p class="med-font"><br><b>Qgen</b> is a tool that helps you generate Multiple Choice Questions (MCQ) from any text. Attach your notes, guidebooks and articles to generate questions for your learning.</p>', unsafe_allow_html=True)
     # st.markdown("<h1 style='text-align: center;'>Qgen is a tool that helps you generate Multiple Choice Questions (MCQ) from any text. Attach your notes, guidebooks and articles to generate questions for your learning.</h1><br>", unsafe_allow_html=True)
-    st.markdown('<div style="padding: 5% 20%;"><a href="/generate" target = "_self"><button style="background-color:#697588;border: none;color: white;padding: 10px 25px;border-radius: 12px;">Create Your Quiz!</button></a></div>', unsafe_allow_html=True)
+    st.markdown('<div style="padding: 5% 20%;"><a href="/generate" target = "_self"><button style="background-color:#0C2F81;border: none;color: white;padding: 10px 25px;border-radius: 12px;">Create Your Quiz!</button></a></div>', unsafe_allow_html=True)
     vert_space = '<div style="padding: 50%;"></div>'
     # if st.button("Create Your Quiz!"):
     #     nav_page("generate")

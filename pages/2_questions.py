@@ -68,6 +68,7 @@ st.markdown("""
 #file path
 css_path = os.path.realpath('assets/style.css')
 data_path = os.path.realpath('data/data.json')
+params_path = os.path.realpath('data/params.json')
 compare_data_path = os.path.realpath('data/compare_answer.json')
 
 
@@ -94,6 +95,19 @@ def get_output():
         # Reading from json file
         output = json.load(openfile)
 
+        def get_params():
+            # Opening JSON file
+            with open('data/params.json', 'r') as openfile:
+            
+                # Reading from json file
+                params = json.load(openfile)
+            return params
+
+        params = get_params()
+
+        if len(output)<params:
+            st.error('😢 Opps! Based on your text, only {} out of {} questions can be generated.'.format(len(output),params))
+
     for index,qns in enumerate(output):
         question = 'Q'+str(index+1) + ': ' + output[index]['question']
         shuffled_choices = get_choices(output[index]['options'],output[index]['shuffled'])
@@ -101,13 +115,14 @@ def get_output():
         your_answer.append(str(status.split(':')[1]).strip())
         correct_answer.append(output[index]['answer'])
 
+
     return output, your_answer, correct_answer
-        
 
 
 
 
 output, your_answer, correct_answer= get_output()
+
 
 
 
@@ -191,15 +206,15 @@ with col2:
 with col3:
     if st.button("Generate New Questions"):
 
-        #remove previous json file
-        jsonString = json.dumps({})
-        jsonFile = open(data_path, "w")
-        jsonFile.write(jsonString)
-        jsonFile.close()
+        # #remove previous json file
+        # jsonString = json.dumps({})
+        # jsonFile = open(data_path, "w")
+        # jsonFile.write(jsonString)
+        # jsonFile.close()
 
-        jsonString = json.dumps({})
-        jsonFile = open(compare_data_path, "w")
-        jsonFile.write(jsonString)
-        jsonFile.close()
+        # jsonString = json.dumps({})
+        # jsonFile = open(compare_data_path, "w")
+        # jsonFile.write(jsonString)
+        # jsonFile.close()
 
         nav_page("generate")
