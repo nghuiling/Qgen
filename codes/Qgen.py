@@ -74,7 +74,13 @@ def run_qgen(text, num_mcq, num_choice):
         
         out=[]
 
-        extractor = pke.unsupervised.MultipartiteRank()
+        @st.cache_resource
+        def extractor_model():
+
+            extractor = pke.unsupervised.MultipartiteRank()
+            return extractor
+        
+        extractor = extractor_model()
         extractor.load_document(input=text)
         #    not contain punctuation marks or stopwords as candidates.
         pos = {'NOUN', 'PROPN'}
@@ -119,7 +125,14 @@ def run_qgen(text, num_mcq, num_choice):
         return sentences
     
     def get_sentences_for_keyword(keywords, sentences):
-        keyword_processor = KeywordProcessor()
+
+        @st.cache_resource
+        def kw_process():
+            keyword_processor = KeywordProcessor()
+            return keyword_processor
+        
+        keyword_processor = kw_process()
+        
         keyword_sentences = {}
         for word in keywords:
             keyword_sentences[word] = []

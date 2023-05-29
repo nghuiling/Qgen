@@ -104,8 +104,8 @@ def get_file():
 
 def get_num_mcq():
     num_mcq = st.number_input(
-    'Number of MCQs (from 1 to 50)',
-    min_value=1, max_value= 50)
+    'Number of MCQs (from 1 to 20)',
+    min_value=1, max_value= 20)
     return num_mcq
 
 def get_num_choice():
