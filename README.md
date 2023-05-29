@@ -25,6 +25,10 @@ https://github.com/nghuiling/Qgen/assets/47473260/b996a7d0-d64c-42eb-a622-925761
 
 #### Codes on Colab:
 https://colab.research.google.com/drive/1o9DLC79lm9cMViDqDQMQ8H_HIJEHZty5?usp=sharing
+<br>
+
+#### Try it now 😊:
+https://nghuiling-qgen-home-yr35s0.streamlit.app/
 
 <br>
 <br>
