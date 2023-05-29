@@ -205,17 +205,20 @@ def run_qgen(text, num_mcq, num_choice):
         #wrong choices
         all_choices = random.sample(key_distractor_list[each] , min(len(key_distractor_list[each]), num_choice))
 
-        #all choices
-        all_choices.append(right_answer)
-        random.shuffle(all_choices)
-        
-        #get index of correct answer
-        answer_index = all_choices.index(right_answer)
 
-        #options
-        options = ['A','B','C','D','E','F','G']
-        
         if len(all_choices) >= num_choice:
+            all_choices = all_choices[:num_choice]
+
+            #all choices
+            all_choices.append(right_answer)
+            random.shuffle(all_choices)
+        
+            #get index of correct answer
+            answer_index = all_choices.index(right_answer)
+
+            #options
+            options = ['A','B','C','D','E','F','G']
+
 
             temp_json_data = {}
             temp_json_data['question'] = output_qns

@@ -71,6 +71,8 @@ st.markdown("""
 #file path
 css_path = os.path.realpath('assets/style.css')
 data_path = os.path.realpath('data/data.json')
+params_path = os.path.realpath('data/params.json')
+compare_data_path = os.path.realpath('data/compare_answer.json')
 
 
 with open( css_path ) as css:
@@ -79,20 +81,6 @@ with open( css_path ) as css:
 st.markdown('<p class="big-font">Generate MCQs</p>', unsafe_allow_html=True)
 
 
-# import streamlit as st
-# import webbrowser
-
-# url = 'https://www.streamlit.io/'
-
-# if st.button('Open browser'):
-#     webbrowser.open_new_tab(url)
-
-# if st.button("Back"):
-#     nav_page("home")
-
-# st.write(
-#     """Insert yout text here to generate MCQs"""
-# )
 
 def get_text():
     text= st.text_area('Input your text:' , placeholder='Your text here...')
@@ -104,8 +92,8 @@ def get_file():
 
 def get_num_mcq():
     num_mcq = st.number_input(
-    'Number of MCQs (from 1 to 50)',
-    min_value=1, max_value= 50)
+    'Number of MCQs (from 1 to 20)',
+    min_value=1, max_value= 20)
     return num_mcq
 
 def get_num_choice():
@@ -113,6 +101,18 @@ def get_num_choice():
         'Number of Options per MCQ (from 4 to 6)',
         min_value=4, max_value= 6)
     return num_choice
+
+
+#remove previous json file
+jsonString = json.dumps({})
+jsonFile = open(data_path, "w")
+jsonFile.write(jsonString)
+jsonFile.close()
+
+jsonString = json.dumps({})
+jsonFile = open(compare_data_path, "w")
+jsonFile.write(jsonString)
+jsonFile.close()
 
 
 st.markdown('<p class="med-font">Step 1: Add your texts</p>', unsafe_allow_html=True)
@@ -126,17 +126,17 @@ file_input = get_file()
 
 #################################
 #testing
-def get_min_max_qns(min, max):
-  items = list(range(min,max+1))
-  items1 = [str(x) for x in items]
-  items1.insert(0,'')
-  items1 = tuple(items1)
-  return items1
+# def get_min_max_qns(min, max):
+#   items = list(range(min,max+1))
+#   items1 = [str(x) for x in items]
+#   items1.insert(0,'')
+#   items1 = tuple(items1)
+#   return items1
 
 
-#settings
-min_max_num_mcq = get_min_max_qns(1,50)
-min_max_num_choice = get_min_max_qns(4,6)
+# testing settings
+# min_max_num_mcq = get_min_max_qns(1,50)
+# min_max_num_choice = get_min_max_qns(4,6)
 
 
 #################################
@@ -144,6 +144,14 @@ min_max_num_choice = get_min_max_qns(4,6)
 st.markdown('<p class="med-font"><br>Step 2: Select number of questions</p>', unsafe_allow_html=True)
 
 num_mcq_input = get_num_mcq()
+
+def save_params(num_mcq_input):
+    #save into json file
+    jsonString = json.dumps(num_mcq_input)
+    jsonFile = open(params_path, "w")
+    jsonFile.write(jsonString)
+    jsonFile.close()
+
 
 
 st.markdown('<p class="med-font"><br>Step 3: Select number of options</p>', unsafe_allow_html=True)
@@ -160,13 +168,6 @@ def save_output(output):
     jsonFile.write(jsonString)
     jsonFile.close()
 
-    # st.write("##### Your results:")
-    # for index,qns in enumerate(output):
-    #     question = 'Q'+str(index+1) + ': ' + output[index]['question']
-    #     shuffled_choices = get_choices(output[index]['options'],output[index]['shuffled'])
-    #     status = st.radio(question,shuffled_choices)
-
-
 
 if st.button("Generate my MCQs now!"):
     if (num_mcq_input and num_mcq_choice):
@@ -179,11 +180,13 @@ if st.button("Generate my MCQs now!"):
                 file_text_input = str(bytes_data, encoding='utf-8')
                 output = run_qgen(file_text_input, int(num_mcq_input), int(num_mcq_choice)-1)
                 save_output(output)
+                save_params(num_mcq_input)
                 nav_page("questions")
 
             else:
                 output = run_qgen(text_input, int(num_mcq_input), int(num_mcq_choice)-1)
                 save_output(output)
+                save_params(num_mcq_input)
                 nav_page("questions")
 
 

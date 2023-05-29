@@ -189,14 +189,14 @@ with col3:
     if st.button("Generate New Questions"):
 
         #remove previous json file
-        jsonString = json.dumps({})
-        jsonFile = open(data_path, "w")
-        jsonFile.write(jsonString)
-        jsonFile.close()
+        # jsonString = json.dumps({})
+        # jsonFile = open(data_path, "w")
+        # jsonFile.write(jsonString)
+        # jsonFile.close()
 
-        jsonString = json.dumps({})
-        jsonFile = open(compare_data_path, "w")
-        jsonFile.write(jsonString)
-        jsonFile.close()
+        # jsonString = json.dumps({})
+        # jsonFile = open(compare_data_path, "w")
+        # jsonFile.write(jsonString)
+        # jsonFile.close()
 
         nav_page("generate")
