@@ -48,7 +48,13 @@ def run_qgen(text, num_mcq, num_choice):
     full_text_list = [x.replace("\n", " ") for x in text.split('\n\n')]
 
     summarized_text_list = []
-    model = TransformerSummarizer(transformer_type="OpenAIGPT", transformer_model_key="openai-gpt")
+
+    @st.cache_resource
+    def load_model():
+        model = TransformerSummarizer(transformer_type="OpenAIGPT", transformer_model_key="openai-gpt")
+        return model
+    
+    model = load_model()
 
     for each_para in full_text_list:
         # model = Summarizer()
@@ -209,7 +215,7 @@ def run_qgen(text, num_mcq, num_choice):
         #options
         options = ['A','B','C','D','E','F','G']
         
-        if len(all_choices) >= 4:
+        if len(all_choices) >= num_choice:
 
             temp_json_data = {}
             temp_json_data['question'] = output_qns
