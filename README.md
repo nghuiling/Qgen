@@ -28,7 +28,7 @@ https://colab.research.google.com/drive/1o9DLC79lm9cMViDqDQMQ8H_HIJEHZty5?usp=sh
 <br>
 
 #### Try it now 😊:
-https://nghuiling-qgen-home-yr35s0.streamlit.app/
+https://nghuiling-qgen-home-2n3gaq.streamlit.app/
 
 <br>
 <br>
