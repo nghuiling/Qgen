@@ -42,21 +42,14 @@ def nav_page(page_name, timeout_secs=3):
 
 st.set_page_config(page_title="Qgen", page_icon="🔍", initial_sidebar_state="collapsed")
 
+
 st.markdown(
     """
 <style>
-    [data-testid="collapsedControl"] {
-        display: none
+    [data-testid="stSidebarNav"] {
+        display: none;
     }
-</style>
-""",
-    unsafe_allow_html=True,
-)
-
-
-st.markdown("""
-<style>
-.big-font {
+    .big-font {
     font-size:35px !important;
     font-weight: bold;
 }
@@ -65,7 +58,11 @@ st.markdown("""
     font-weight: bold;
 }
 </style>
-""", unsafe_allow_html=True)
+""",
+    unsafe_allow_html=True,
+)
+
+
 
 
 #file path
