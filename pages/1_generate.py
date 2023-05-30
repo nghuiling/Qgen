@@ -1,48 +1,24 @@
 import streamlit as st
-import time
-import numpy as np
-
 from streamlit.components.v1 import html
+from streamlit_extras.switch_page_button import switch_page
+
+import os
+import time
+import json
+import numpy as np
 
 from codes.Qgen import run_qgen
 
-import json
 
-import os
-
+######################## GET DIRECTORY ########################
 os.getcwd()
 
 
-
-
-def nav_page(page_name, timeout_secs=3):
-    nav_script = """
-        <script type="text/javascript">
-            function attempt_nav_page(page_name, start_time, timeout_secs) {
-                var links = window.parent.document.getElementsByTagName("a");
-                for (var i = 0; i < links.length; i++) {
-                    if (links[i].href.toLowerCase().endsWith("/" + page_name.toLowerCase())) {
-                        links[i].click();
-                        return;
-                    }
-                }
-                var elasped = new Date() - start_time;
-                if (elasped < timeout_secs * 1000) {
-                    setTimeout(attempt_nav_page, 100, page_name, start_time, timeout_secs);
-                } else {
-                    alert("Unable to navigate to page '" + page_name + "' after " + timeout_secs + " second(s).");
-                }
-            }
-            window.addEventListener("load", function() {
-                attempt_nav_page("%s", new Date(), %d);
-            });
-        </script>
-    """ % (page_name, timeout_secs)
-    html(nav_script)
-
+######################## CONFIG PAGE ########################
 st.set_page_config(page_title="Qgen", page_icon="🔍", initial_sidebar_state="collapsed")
 
 
+######################## HTML STYLE ########################
 st.markdown(
     """
 <style>
@@ -57,26 +33,33 @@ st.markdown(
     font-size:20px !important;
     font-weight: bold;
 }
-</style>
 """,
     unsafe_allow_html=True,
 )
 
 
+######################## SESSION STATE ########################
+# Delete all the items in Session state
+# for key in st.session_state.keys():
+#     del st.session_state[key]
+
+# "session state:", st.session_state
 
 
-#file path
+######################## FILE PATH ########################
 css_path = os.path.realpath('assets/style.css')
-data_path = os.path.realpath('data/data.json')
-params_path = os.path.realpath('data/params.json')
-compare_data_path = os.path.realpath('data/compare_answer.json')
 
 
+######################## GET CSS ########################
 with open( css_path ) as css:
     st.markdown( f'<style>{css.read()}</style>' , unsafe_allow_html= True)
 
-st.markdown('<p class="big-font">Generate MCQs</p>', unsafe_allow_html=True)
 
+######################## GET CONTENTS ########################
+if st.button("Back to Home 🏠"):
+    switch_page("home")
+
+st.markdown('<p class="big-font">Generate MCQs</p>', unsafe_allow_html=True)
 
 
 def get_text():
@@ -100,20 +83,7 @@ def get_num_choice():
     return num_choice
 
 
-#remove previous json file
-jsonString = json.dumps({})
-jsonFile = open(data_path, "w")
-jsonFile.write(jsonString)
-jsonFile.close()
-
-jsonString = json.dumps({})
-jsonFile = open(compare_data_path, "w")
-jsonFile.write(jsonString)
-jsonFile.close()
-
-
 st.markdown('<p class="med-font">Step 1: Add your texts</p>', unsafe_allow_html=True)
-
 
 text_input = get_text()
 
@@ -121,78 +91,47 @@ st.write("###### or")
 
 file_input = get_file()
 
-#################################
-#testing
-# def get_min_max_qns(min, max):
-#   items = list(range(min,max+1))
-#   items1 = [str(x) for x in items]
-#   items1.insert(0,'')
-#   items1 = tuple(items1)
-#   return items1
-
-
-# testing settings
-# min_max_num_mcq = get_min_max_qns(1,50)
-# min_max_num_choice = get_min_max_qns(4,6)
-
-
-#################################
-
 st.markdown('<p class="med-font"><br>Step 2: Select number of questions</p>', unsafe_allow_html=True)
 
 num_mcq_input = get_num_mcq()
 
-def save_params(num_mcq_input):
-    #save into json file
-    jsonString = json.dumps(num_mcq_input)
-    jsonFile = open(params_path, "w")
-    jsonFile.write(jsonString)
-    jsonFile.close()
-
-
-
 st.markdown('<p class="med-font"><br>Step 3: Select number of options</p>', unsafe_allow_html=True)
-
 
 num_mcq_choice = get_num_choice()
 
 
-def save_output(output):
-
-    #save into json file
-    jsonString = json.dumps(output)
-    jsonFile = open(data_path, "w")
-    jsonFile.write(jsonString)
-    jsonFile.close()
-
-
-if st.button("Generate my MCQs now!"):
+if st.button("Generate my MCQs now! 🪄"):
     if (num_mcq_input and num_mcq_choice):
         if (text_input and not file_input) or (file_input and not text_input):
-        
-        
         
             if file_input:
                 bytes_data = file_input.getvalue()
                 file_text_input = str(bytes_data, encoding='utf-8')
                 output = run_qgen(file_text_input, int(num_mcq_input), int(num_mcq_choice)-1)
-                save_output(output)
-                save_params(num_mcq_input)
-                nav_page("questions")
+
+                #add session states
+                if 'num_mcq' not in st.session_state:
+                    st.session_state['num_mcq'] = num_mcq_input
+
+                if 'output' not in st.session_state:
+                    st.session_state['output'] = output
+
+                switch_page("questions")
 
             else:
                 output = run_qgen(text_input, int(num_mcq_input), int(num_mcq_choice)-1)
-                save_output(output)
-                save_params(num_mcq_input)
-                nav_page("questions")
 
+                #add session states
+                if 'num_mcq' not in st.session_state:
+                    st.session_state['num_mcq'] = num_mcq_input
+
+                if 'output' not in st.session_state:
+                    st.session_state['output'] = output
+
+                switch_page("questions")
 
         else:
             st.error('😥 Unable to generate questions... Please choose to either input text or upoad a file!')        
-              
-
+            
     else:
         st.error('😥 Unable to generate questions... Please select all the options!')
-        
-
-
