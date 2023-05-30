@@ -82,9 +82,13 @@ def get_num_choice():
         min_value=4, max_value= 6)
     return num_choice
 
+st.error('⚠️Warning: By using our services, you are responsible for the data security and usage. Please do not add any sensitive data!')
+
 
 st.markdown('<p class="med-font">Step 1: Add your texts</p>', unsafe_allow_html=True)
 
+
+# Please ensure data security and responsible usage. Do not add any sensitive data!
 text_input = get_text()
 
 st.write("###### or")
@@ -98,6 +102,7 @@ num_mcq_input = get_num_mcq()
 st.markdown('<p class="med-font"><br>Step 3: Select number of options</p>', unsafe_allow_html=True)
 
 num_mcq_choice = get_num_choice()
+
 
 
 if st.button("Generate my MCQs now! 🪄"):
